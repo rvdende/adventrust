@@ -5,6 +5,60 @@ enum Direction {
     Up,
 }
 
+fn part1(data_in: Vec<(Direction, isize)>) {
+    let mut horizontal = 0;
+    let mut depth = 0;
+
+    for (dir, value) in data_in {
+        match dir {
+            Direction::Forward => {
+                println!("Forward {}", value);
+                horizontal += value;
+            }
+            Direction::Down => {
+                depth += value;
+                println!("Down {}", value);
+            }
+            Direction::Up => {
+                depth -= value;
+                println!("Up {}", value);
+            }
+        }
+    }
+
+    println!("Horizontal: {}", horizontal);
+    println!("Depth: {}", depth);
+    println!("Total: {}", horizontal * depth);
+}
+
+fn part2(data_in: Vec<(Direction, isize)>) {
+    let mut horizontal = 0;
+    let mut depth = 0;
+    let mut aim = 0;
+
+    for (dir, value) in data_in {
+        match dir {
+            Direction::Down => {
+                aim += value;
+                println!("Down {}", value);
+            }
+            Direction::Up => {
+                aim -= value;
+                println!("Up {}", value);
+            }
+            Direction::Forward => {
+                println!("Forward {}", value);
+                horizontal += value;
+                depth += aim * value;
+            }
+        }
+    }
+
+    println!("Horizontal: {}", horizontal);
+    println!("Depth: {}", depth);
+    println!("Total: {}", horizontal * depth);
+}
+
 fn main() {
     // let data = std::fs::read_to_string("sample.txt").expect("could not read file.");
     let data = std::fs::read_to_string("datainput.txt").expect("could not read file.");
@@ -27,29 +81,6 @@ fn main() {
         })
         .collect::<Vec<(Direction, isize)>>();
 
-    // formatted
-
-    let mut horizontal = 0;
-    let mut depth = 0;
-
-    for (dir, value) in data {
-        match dir {
-            Direction::Forward => {
-                println!("Forward {}", value);
-                horizontal += value;
-            }
-            Direction::Down => {
-                depth += value;
-                println!("Down {}", value);
-            }
-            Direction::Up => {
-                depth -= value;
-                println!("Up {}", value);
-            }
-        }
-    }
-
-    println!("Horizontal: {}", horizontal);
-    println!("Depth: {}", depth);
-    println!("Total: {}", horizontal * depth);
+    // part1(data);
+    part2(data);
 }
