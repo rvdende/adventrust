@@ -1,9 +1,9 @@
 
 fn main() {
-    //let data = std::fs::read_to_string("sample.txt").unwrap();
-    let data = std::fs::read_to_string("data.txt").unwrap();
+    let data = std::fs::read_to_string("sample.txt").unwrap();
+    // let data = std::fs::read_to_string("data.txt").unwrap();
 
-    let lines = data.trim().split("\n")
+    let total: usize = data.trim().split("\n")
             .map(|rs| {
                 // char value
                 
@@ -35,8 +35,8 @@ fn main() {
                             let objY = chars[y];
                             if (objX == objY) {
                                 let z = rsi.as_bytes()[x] as char;
-                                println!("{}",rsi.to_string());
-                                println!("found match x {} y {} char {}", x, y, z);
+                                // println!("{}",rsi.to_string());
+                                // println!("found match x {} y {} char {}", x, y, z);
                                 output = chars[x].into();
                                 return output;
                             }
@@ -46,10 +46,27 @@ fn main() {
 
                 return output;
 
-            }).collect::<Vec<usize>>();
+            }).collect::<Vec<usize>>().iter().sum();
 
-    let total: usize = lines.iter().sum();
+    
+    println!("part 1 total: {}", total);
 
-    println!("total: {}", total);
+    // ---------------------
+
+    let part2: Vec<_> = data.trim().split("\n").collect();
+
+    let mut idx = 0;
+    loop {
+        let a = part2[idx].to_string();
+        let b = part2[idx+1].to_string();
+        let c = part2[idx+2].to_string();
+        idx += 3;
+
+        if (idx >= part2.len()) {
+            break;
+        }
+    }
+
+    dbg!(part2);
 
 }
