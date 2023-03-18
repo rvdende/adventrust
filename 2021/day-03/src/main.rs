@@ -1,5 +1,17 @@
 // --------------------------------------------------
 
+fn vec_usize_to_vec_bool(bits: Vec<usize>) -> Vec<bool> {
+    let mut out: Vec<bool> = vec![];
+    for b in bits {
+        if b == 0 {
+            out.push(false);
+        } else {
+            out.push(true);
+        }
+    }
+    return out;
+}
+
 fn part1(data_in: &Vec<Vec<usize>>) {
     let mut common: Vec<usize> = vec![];
     for l in data_in {
@@ -31,43 +43,134 @@ fn part1(data_in: &Vec<Vec<usize>>) {
     println!("power_consumption: {}", power_consumption);
 }
 
-fn part2_oxygen_generator_rating(data_in: &Vec<Vec<usize>>) {
-    let mut common: Vec<usize> = vec![];
+fn printVecVecUsize(data: &Vec<Vec<usize>>) {
+    println!();
+    for l in data {
+        for b in l {
+            print!("{}", b);
+        }
+        println!("");
+    }
+    println!();
+}
+
+fn printVecUsize(data: &Vec<usize>) {
+    println!();
+    for b in data {
+        print!("{}", b);
+    }
+    println!();
+}
+
+fn iterateFindNextOxygen(data_in_raw: &Vec<Vec<usize>>, indexpos: usize) -> Vec<Vec<usize>> {
+    let data_in = &data_in_raw.clone();
+
+    let mut bit0count = 0;
+    let mut bit1count = 0;
+
     for l in data_in {
-        for (b_id, b) in l.iter().enumerate() {
-            if common.len() < b_id + 1 {
-                common.push(0);
-            }
-            common[b_id] += b;
+        if l[indexpos] == 0 {
+            bit0count += 1;
+        } else {
+            bit1count += 1;
         }
     }
 
-    let common_bool: Vec<usize> = common
+    let morebit = if bit1count >= bit0count { 1 } else { 0 };
+
+    let localcopy: Vec<Vec<usize>> = data_in
+        .clone()
         .iter()
-        .map(|c| {
-            if c > &(data_in.len() / 2) {
-                return 1;
-            } else {
-                return 0;
+        .map(|l| l.clone())
+        .filter(|l| {
+            if (l[indexpos] == morebit) {
+                return true;
             }
+            return false;
         })
         .collect();
 
-    dbg!(&common_bool);
+    return localcopy;
+}
 
-    data_in.iter().for_each(|l| {
-        let a = l.len();
-        let b = common_bool.len();
-        println!("a; {} b: {}", a, b);
-        l.iter().for_each(|n| {
-            // todo...
+fn iterateFindNextCO2(data_in_raw: &Vec<Vec<usize>>, indexpos: usize) -> Vec<Vec<usize>> {
+    let data_in = &data_in_raw.clone();
+
+    let mut bit0count = 0;
+    let mut bit1count = 0;
+
+    for l in data_in {
+        if l[indexpos] == 0 {
+            bit0count += 1;
+        } else {
+            bit1count += 1;
+        }
+    }
+
+    let fewerbit = if bit0count <= bit1count { 0 } else { 1 };
+
+    let localcopy: Vec<Vec<usize>> = data_in
+        .clone()
+        .iter()
+        .map(|l| l.clone())
+        .filter(|l| {
+            if (l[indexpos] == fewerbit) {
+                return true;
+            }
+            return false;
         })
-    });
+        .collect();
+
+    return localcopy;
+}
+
+fn part2_oxygen_generator_rating(data_in: &Vec<Vec<usize>>) {
+    let mut indexposition = 0;
+    let mut calcdata = data_in.clone();
+    loop {
+        // println!("===== loop {}", indexposition);
+        calcdata = iterateFindNextOxygen(&calcdata, indexposition);
+        // printVecVecUsize(&calcdata);
+        indexposition += 1;
+        if calcdata.len() < 2 {
+            break;
+        }
+        if indexposition == calcdata[0].len() {
+            break;
+        }
+    }
+    let data = vec_usize_to_vec_bool(calcdata[0].clone());
+    let (oxygen, _) = vec_bool_binary_to_usize(data);
+    println!("oxygen = {}", oxygen);
+
+    //////////// -------------------
+
+    let mut indexposition = 0;
+    let mut calcdata = data_in.clone();
+    loop {
+        // println!("===== loop {}", indexposition);
+        calcdata = iterateFindNextCO2(&calcdata, indexposition);
+        // printVecVecUsize(&calcdata);
+        indexposition += 1;
+        if calcdata.len() < 2 {
+            break;
+        }
+        if indexposition == calcdata[0].len() {
+            break;
+        }
+    }
+    let data = vec_usize_to_vec_bool(calcdata[0].clone());
+
+    let (co2, _) = vec_bool_binary_to_usize(data);
+    println!("co2 = {}", co2);
+
+    // printVecVecUsize(&calcdata);
+    println!("oxygen * co2 = {}", oxygen * co2);
 }
 
 fn main() {
-    let data = std::fs::read_to_string("sample.txt").unwrap();
-    // let data = std::fs::read_to_string("data.txt").unwrap();
+    //let data = std::fs::read_to_string("sample.txt").unwrap();
+    let data = std::fs::read_to_string("data.txt").unwrap();
 
     let parsed: Vec<Vec<usize>> = data
         .lines()
@@ -104,7 +207,7 @@ fn vec_bool_binary_to_usize(bits: Vec<bool>) -> (usize, usize) {
             num += 2usize.pow(bitslength - i as u32);
         }
     }
-    println!("nor {} => {:b}", num, num);
-    println!("inv {} => {:b}", invertednum, invertednum);
+    // println!("nor {} => {:b}", num, num);
+    // println!("inv {} => {:b}", invertednum, invertednum);
     return (num, invertednum);
 }
