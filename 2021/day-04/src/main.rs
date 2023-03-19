@@ -156,7 +156,7 @@ impl Game {
     }
 
     fn call_number(game: &mut Game) {
-        println!("\n\n\n\n\n\n\ncalling next number!");
+        println!("calling next number!");
         let mut index = 0;
         loop {
             if !game.numbers[index].called {
@@ -167,10 +167,10 @@ impl Game {
                 // marks a number as called
                 for b in 0..game.boards.len() {
                     let winnerfound = Game::mark_board(&mut game.boards[b], called_number);
-                    if winnerfound {
-                        game.winner_found = true;
-                        break;
-                    }
+                    // if winnerfound {
+                    //     game.winner_found = true;
+                    //     break;
+                    // }
                 }
 
                 break;
@@ -186,6 +186,10 @@ impl Game {
 
     fn mark_board(board: &mut Board, called_number: usize) -> bool {
         let mut we_have_a_winner = false;
+
+        if board.won {
+            return false;
+        } //skip if the board has already won.
 
         for t in 0..board.tiles.len() {
             if board.tiles[t].value == called_number {
@@ -259,11 +263,16 @@ fn main() {
     let mut game = Game::initgame("input.txt".to_string());
 
     loop {
-        sleep(time::Duration::from_millis(100));
+        sleep(time::Duration::from_millis(1));
         Game::call_number(&mut game);
-        dbg!(&game);
+        // dbg!(&game);
 
-        if game.winner_found || game.numbers_all_called {
+        // part 1
+        // if game.winner_found || game.numbers_all_called {
+        //     break;
+        // }
+
+        if game.numbers_all_called {
             break;
         }
     }
