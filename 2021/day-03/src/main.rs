@@ -43,7 +43,7 @@ fn part1(data_in: &Vec<Vec<usize>>) {
     println!("power_consumption: {}", power_consumption);
 }
 
-fn printVecVecUsize(data: &Vec<Vec<usize>>) {
+fn print_vec_vec(data: &Vec<Vec<usize>>) {
     println!();
     for l in data {
         for b in l {
@@ -83,7 +83,7 @@ fn iterateFindNextOxygen(data_in_raw: &Vec<Vec<usize>>, indexpos: usize) -> Vec<
         .iter()
         .map(|l| l.clone())
         .filter(|l| {
-            if (l[indexpos] == morebit) {
+            if l[indexpos] == morebit {
                 return true;
             }
             return false;
@@ -130,7 +130,7 @@ fn part2_oxygen_generator_rating(data_in: &Vec<Vec<usize>>) {
     loop {
         // println!("===== loop {}", indexposition);
         calcdata = iterateFindNextOxygen(&calcdata, indexposition);
-        // printVecVecUsize(&calcdata);
+        // print_vec_vec(&calcdata);
         indexposition += 1;
         if calcdata.len() < 2 {
             break;
@@ -150,7 +150,7 @@ fn part2_oxygen_generator_rating(data_in: &Vec<Vec<usize>>) {
     loop {
         // println!("===== loop {}", indexposition);
         calcdata = iterateFindNextCO2(&calcdata, indexposition);
-        // printVecVecUsize(&calcdata);
+        // print_vec_vec(&calcdata);
         indexposition += 1;
         if calcdata.len() < 2 {
             break;
@@ -164,7 +164,7 @@ fn part2_oxygen_generator_rating(data_in: &Vec<Vec<usize>>) {
     let (co2, _) = vec_bool_binary_to_usize(data);
     println!("co2 = {}", co2);
 
-    // printVecVecUsize(&calcdata);
+    // print_vec_vec(&calcdata);
     println!("oxygen * co2 = {}", oxygen * co2);
 }
 
