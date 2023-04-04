@@ -1,7 +1,13 @@
-fn calcfuel(data: &Vec<isize>, pos: isize) -> usize {
+fn calcfuel(data: &Vec<isize>, pos: isize, exponential: bool) -> usize {
     let output: usize = data
         .iter()
-        .map(|c| calcexpfuel((c - pos).abs() as usize))
+        .map(|c| {
+            if exponential {
+                return calcexpfuel((c - pos).abs() as usize);
+            } else {
+                return (c - pos).abs() as usize;
+            }
+        })
         .sum();
     return output;
 }
@@ -12,8 +18,7 @@ fn getminmax(data: &Vec<isize>) -> (isize, isize) {
     return (*min, *max);
 }
 
-fn main() {
-    let filename = "input.txt";
+fn process(filename: &str, exponential: bool) -> isize {
     // let filename = "sample.txt";
 
     let data = std::fs::read_to_string(filename)
@@ -32,7 +37,7 @@ fn main() {
     let mut minpos = 0;
 
     for p in minmax.0..=minmax.1 {
-        let fuelt = calcfuel(&data, p) as isize;
+        let fuelt = calcfuel(&data, p, exponential) as isize;
         println!("pos {} fuel {}", p, fuelt);
 
         if fuelt < minfuel {
@@ -41,7 +46,9 @@ fn main() {
         }
     }
 
-    println!("minpos {} minfuel {}", minpos, minfuel)
+    println!("minpos {} minfuel {}", minpos, minfuel);
+
+    minfuel
 }
 
 fn calcexpfuel(distance: usize) -> usize {
@@ -54,6 +61,10 @@ fn calcexpfuel(distance: usize) -> usize {
     return total;
 }
 
+pub fn run() {
+    process("src/advent2021/day07/sample.txt", false);
+}
+
 #[test]
 fn test() {
     assert_eq!(calcexpfuel(1), 1);
@@ -61,4 +72,10 @@ fn test() {
     assert_eq!(calcexpfuel(3), 6);
     assert_eq!(calcexpfuel(4), 10);
     assert_eq!(calcexpfuel(5), 15);
+
+    assert_eq!(process("src/advent2021/day07/sample.txt", false), 37);
+    assert_eq!(process("src/advent2021/day07/sample.txt", true), 168);
+
+    assert_eq!(process("src/advent2021/day07/input.txt", false), 349769);
+    assert_eq!(process("src/advent2021/day07/input.txt", true), 99540554);
 }
