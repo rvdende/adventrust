@@ -1,65 +1,39 @@
-fn score(hand: &str) -> usize {
-    match hand {
+fn score_round(opponent: &str, player: &str) -> usize {
+    let hand = match player {
         "rock" => 1,
         "paper" => 2,
         "scissors" => 3,
         _ => unreachable!("invalid hand!"),
-    }
-}
-
-fn score_round(round: (&str, &str)) -> usize {
-    let hand = score(round.1);
+    };
 
     let win = 6;
     let draw = 3;
     let lose = 0;
 
-    if round.0 == round.1 {
+    if opponent == player {
         return hand + draw;
     }
 
-    if round.0 == "rock" && round.1 == "paper" {
+    if opponent == "rock" && player == "paper" {
         return hand + win;
     }
-    if round.0 == "paper" && round.1 == "scissors" {
+    if opponent == "paper" && player == "scissors" {
         return hand + win;
     }
-    if round.0 == "scissors" && round.1 == "rock" {
+    if opponent == "scissors" && player == "rock" {
         return hand + win;
     }
-    if round.0 == "rock" && round.1 == "scissors" {
+    if opponent == "rock" && player == "scissors" {
         return hand + lose;
     }
-    if round.0 == "paper" && round.1 == "rock" {
+    if opponent == "paper" && player == "rock" {
         return hand + lose;
     }
-    if round.0 == "scissors" && round.1 == "paper" {
+    if opponent == "scissors" && player == "paper" {
         return hand + lose;
     }
 
     unreachable!("invalid game");
-}
-
-fn calculate_hand<'a>(opponent: &'a str, outcome: &'a str) -> &'a str {
-    match outcome {
-        // lose
-        "X" => match opponent {
-            "rock" => "scissors",
-            "scissors" => "paper",
-            "paper" => "rock",
-            _ => unreachable!(),
-        },
-        // draw
-        "Y" => opponent,
-        // win
-        "Z" => match opponent {
-            "rock" => "paper",
-            "scissors" => "rock",
-            "paper" => "scissors",
-            _ => unreachable!(),
-        },
-        _ => unreachable!(),
-    }
 }
 
 fn process(filename: &str, part: &str) -> usize {
@@ -68,9 +42,9 @@ fn process(filename: &str, part: &str) -> usize {
     let total_points: usize = data
         .lines()
         .map(|l| {
-            let mut round = l.split_once(' ').unwrap();
+            let (mut opponent, mut player) = l.split_once(' ').unwrap();
 
-            round.0 = match round.0 {
+            opponent = match opponent {
                 "A" => "rock",
                 "B" => "paper",
                 "C" => "scissors",
@@ -79,7 +53,7 @@ fn process(filename: &str, part: &str) -> usize {
 
             // switch depending on part 1 or two
             if part == "part1" {
-                round.1 = match round.1 {
+                player = match player {
                     "X" => "rock",
                     "Y" => "paper",
                     "Z" => "scissors",
@@ -87,11 +61,30 @@ fn process(filename: &str, part: &str) -> usize {
                 };
             } else {
                 // part 2
-                round.1 = calculate_hand(round.0, round.1);
+                player = match player {
+                    "X" => match opponent {
+                        // lose
+                        "rock" => "scissors",
+                        "scissors" => "paper",
+                        "paper" => "rock",
+                        _ => unreachable!(),
+                    },
+
+                    "Y" => opponent, // draw
+
+                    "Z" => match opponent {
+                        // win
+                        "rock" => "paper",
+                        "scissors" => "rock",
+                        "paper" => "scissors",
+                        _ => unreachable!(),
+                    },
+                    _ => unreachable!(),
+                };
             }
 
-            let points = score_round(round);
-            println!("round {:?} score: {}", round, points);
+            let points = score_round(opponent, player);
+            println!("round {:?} score: {}", (opponent, player), points);
 
             return points;
         })
