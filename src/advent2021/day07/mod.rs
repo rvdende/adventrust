@@ -61,6 +61,7 @@ fn calcexpfuel(distance: usize) -> usize {
     return total;
 }
 
+#[allow(dead_code)]
 pub fn run() {
     process("src/advent2021/day07/sample.txt", false);
 }

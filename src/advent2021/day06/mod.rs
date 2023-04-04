@@ -73,18 +73,18 @@ impl Survey {
     fn advance_day(&mut self) {
         self.day += 1;
 
-        let mut fishesToSpawn = 0;
+        let mut fishes_to_spawn = 0;
 
         for fish in &mut self.fish {
             fish.timer -= 1;
 
             if fish.timer == -1 {
-                fishesToSpawn += 1;
+                fishes_to_spawn += 1;
                 fish.timer = 6;
             }
         }
 
-        for _ in 0..fishesToSpawn {
+        for _ in 0..fishes_to_spawn {
             self.fish.push(Fish { timer: 8 });
         }
 
@@ -94,13 +94,13 @@ impl Survey {
     fn advance_day_group(&mut self) {
         self.day += 1;
 
-        let mut fishToReset = 0;
-        let mut fishToSpawn = 0;
+        let mut fish_to_reset = 0;
+        let mut fish_to_spawn = 0;
 
         for g in 0..self.fishgroups.len() {
             if g == 0 {
-                fishToReset = self.fishgroups[0].count;
-                fishToSpawn = self.fishgroups[0].count;
+                fish_to_reset = self.fishgroups[0].count;
+                fish_to_spawn = self.fishgroups[0].count;
                 self.fishgroups[0].count = 0; // clears the bottom group
             }
 
@@ -109,11 +109,11 @@ impl Survey {
             }
         }
 
-        self.fishgroups[6].count += fishToReset;
-        self.fishgroups[8].count = fishToSpawn;
+        self.fishgroups[6].count += fish_to_reset;
+        self.fishgroups[8].count = fish_to_spawn;
     }
 
-    fn getTotalFish(&self) -> u128 {
+    fn get_total_fish(&self) -> u128 {
         let total: u128 = self.fishgroups.iter().map(|g| g.count).sum();
         return total;
     }
@@ -132,7 +132,7 @@ fn process(totaldays: isize, filename: &str) -> u128 {
             break;
         }
     }
-    let total = survey.getTotalFish();
+    let total = survey.get_total_fish();
     println!("Total fish: {}", total);
 
     total

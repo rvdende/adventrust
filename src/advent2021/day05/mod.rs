@@ -144,6 +144,7 @@ fn process(filename: &str) -> (usize, usize) {
     (part1_answer, part2_answer)
 }
 
+#[allow(dead_code)]
 pub fn run() {
     process("src/advent2021/day05/sample.txt");
 }
