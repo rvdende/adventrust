@@ -19,7 +19,7 @@ fn main() {
 
                     // println!("{} {} {} {} {}", a, z, A, Z, n);
 
-                    if (n >= a && n <= z) {
+                    if n >= a && n <= z {
                         return n - a + 1;
                     } else {
                         return n - A + 27;
@@ -33,10 +33,10 @@ fn main() {
 
             for x in 0..chars.len() / 2 {
                 for y in chars.len() / 2..chars.len() {
-                    if (x != y) {
+                    if x != y {
                         let objX = chars[x];
                         let objY = chars[y];
-                        if (objX == objY) {
+                        if objX == objY {
                             let z = rsi.as_bytes()[x] as char;
                             // println!("{}",rsi.to_string());
                             // println!("found match x {} y {} char {}", x, y, z);
@@ -66,7 +66,7 @@ fn main() {
         let c = part2[idx + 2].to_string();
         idx += 3;
 
-        if (idx >= part2.len()) {
+        if idx >= part2.len() {
             break;
         }
     }
