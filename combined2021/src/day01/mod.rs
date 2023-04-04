@@ -8,7 +8,7 @@ impl Submarine {
 
         let scanner_readings = data
             .trim()
-            .split("\n")
+            .split('\n')
             .map(|x| x.trim().parse::<usize>().unwrap())
             .collect::<Vec<usize>>();
 
@@ -47,14 +47,33 @@ impl Submarine {
         increases
     }
 }
-
+#[allow(dead_code)]
 fn main() {
-    // let sub = Submarine::load_data("sample.txt");
-    let sub = Submarine::load_data("input.txt");
+    let sub = Submarine::load_data("src/day01/sample.txt");
+    //let sub = Submarine::load_data("day01/input.txt");
 
     let part1 = sub.calculate_depth_changes();
     println!("Depth changes: {}", part1);
 
     let part2 = sub.calculate_depth_changes_window();
     println!("Depth changes window: {}", part2);
+}
+
+#[test]
+pub fn test() {
+    // sample
+    let sample_sub = Submarine::load_data("src/day01/sample.txt");
+    let sample_part1 = sample_sub.calculate_depth_changes();
+    let sample_part2 = sample_sub.calculate_depth_changes_window();
+
+    assert_eq!(sample_part1, 7);
+    assert_eq!(sample_part2, 5);
+
+    // full
+    let full_sub = Submarine::load_data("src/day01/input.txt");
+    let full_part1 = full_sub.calculate_depth_changes();
+    let full_part2 = full_sub.calculate_depth_changes_window();
+
+    assert_eq!(full_part1, 1482);
+    assert_eq!(full_part2, 1518);
 }
