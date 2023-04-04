@@ -1,6 +1,6 @@
 mod advent2021;
+mod advent2022;
 
 fn main() {
-    println!("Hello, world!");
-    advent2021::day08::run();
+    advent2022::day01::run();
 }

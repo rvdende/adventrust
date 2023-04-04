@@ -1,3 +1,4 @@
+#[allow(dead_code)]
 struct Survey {
     fish: Vec<Fish>,
     fishgroups: Vec<FishGroup>,
@@ -138,6 +139,7 @@ fn process(totaldays: isize, filename: &str) -> u128 {
     total
 }
 
+#[allow(dead_code)]
 pub fn run() {
     process(80, "src/advent2021/day06/sample.txt");
 }

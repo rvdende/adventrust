@@ -253,13 +253,14 @@ fn process(filename: &str) -> (usize, usize) {
     (part1_total, part2_total)
 }
 
+#[allow(dead_code)]
 pub fn run() {
-    // let sample = process("src/advent2021/day08/sample.txt");
+    let sample = process("src/advent2021/day08/sample.txt");
 
-    let example =
-        "acedgfb cdfbe gcdfa fbcad dab cefabd cdfgeb eafb cagedb ab cdfeb fcadb cdfeb cdbaf";
+    // let example =
+    //     "acedgfb cdfbe gcdfa fbcad dab cefabd cdfgeb eafb cagedb ab cdfeb fcadb cdfeb cdbaf";
 
-    figureoutnumbers(example.to_string());
+    // figureoutnumbers(example.to_string());
 
     // println!("part1 {}", sample.0);
     // println!("part2 {}", sample.1);
