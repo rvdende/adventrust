@@ -93,11 +93,11 @@ fn calculate(filename: &str) -> (isize, isize) {
 
 #[test]
 fn test() {
-    let sample = calculate("src/day02/sample.txt");
+    let sample = calculate("src/advent2021/day02/sample.txt");
     assert_eq!(sample.0, 150);
     assert_eq!(sample.1, 900);
 
-    let input = calculate("src/day02/input.txt");
+    let input = calculate("src/advent2021/day02/input.txt");
     assert_eq!(input.0, 2215080);
     assert_eq!(input.1, 1864715580);
 }

@@ -49,7 +49,7 @@ impl Submarine {
 }
 #[allow(dead_code)]
 fn main() {
-    let sub = Submarine::load_data("src/day01/sample.txt");
+    let sub = Submarine::load_data("src/advent2021/day01/sample.txt");
     //let sub = Submarine::load_data("day01/input.txt");
 
     let part1 = sub.calculate_depth_changes();
@@ -62,7 +62,7 @@ fn main() {
 #[test]
 pub fn test() {
     // sample
-    let sample_sub = Submarine::load_data("src/day01/sample.txt");
+    let sample_sub = Submarine::load_data("src/advent2021/day01/sample.txt");
     let sample_part1 = sample_sub.calculate_depth_changes();
     let sample_part2 = sample_sub.calculate_depth_changes_window();
 
@@ -70,7 +70,7 @@ pub fn test() {
     assert_eq!(sample_part2, 5);
 
     // full
-    let full_sub = Submarine::load_data("src/day01/input.txt");
+    let full_sub = Submarine::load_data("src/advent2021/day01/input.txt");
     let full_part1 = full_sub.calculate_depth_changes();
     let full_part2 = full_sub.calculate_depth_changes_window();
 

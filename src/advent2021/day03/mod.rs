@@ -1,6 +1,3 @@
-#[allow(dead_code)]
-// --------------------------------------------------
-
 fn vec_usize_to_vec_bool(bits: Vec<usize>) -> Vec<bool> {
     let mut out: Vec<bool> = vec![];
     for b in bits {
@@ -176,9 +173,9 @@ pub fn process(filename: &str) -> (usize, usize) {
 
 #[test]
 fn test() {
-    let sample = process("src/day03/sample.txt");
+    let sample = process("src/advent2021/day03/sample.txt");
     assert_eq!(sample, (198, 230));
 
-    let input = process("src/day03/input.txt");
+    let input = process("src/advent2021/day03/input.txt");
     assert_eq!(input, (3901196, 4412188));
 }

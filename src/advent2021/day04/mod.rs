@@ -284,15 +284,16 @@ fn process(filename: &str) -> (usize, usize) {
     (part1answer, part2answer)
 }
 
+#[allow(dead_code)]
 pub fn run() {
-    process("src/day04/sample.txt");
+    process("src/advent2021/day04/sample.txt");
 }
 
 #[test]
 fn test() {
-    let sample = process("src/day04/sample.txt");
+    let sample = process("src/advent2021/day04/sample.txt");
     assert_eq!(sample, (4512, 1924));
 
-    let input = process("src/day04/input.txt");
+    let input = process("src/advent2021/day04/input.txt");
     assert_eq!(input, (21607, 19012));
 }
