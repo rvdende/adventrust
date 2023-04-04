@@ -91,9 +91,7 @@ fn part2_oxygen_generator_rating(data_in: &Vec<Vec<usize>>) -> usize {
     let mut indexposition = 0;
     let mut calcdata = data_in.clone();
     loop {
-        // println!("===== loop {}", indexposition);
         calcdata = iterate_find_next_oxygen(&calcdata, indexposition);
-        // print_vec_vec(&calcdata);
         indexposition += 1;
         if calcdata.len() < 2 {
             break;
@@ -111,9 +109,7 @@ fn part2_oxygen_generator_rating(data_in: &Vec<Vec<usize>>) -> usize {
     let mut indexposition = 0;
     let mut calcdata = data_in.clone();
     loop {
-        // println!("===== loop {}", indexposition);
         calcdata = iterate_find_next_co2(&calcdata, indexposition);
-        // print_vec_vec(&calcdata);
         indexposition += 1;
         if calcdata.len() < 2 {
             break;
@@ -127,15 +123,33 @@ fn part2_oxygen_generator_rating(data_in: &Vec<Vec<usize>>) -> usize {
     let (co2, _) = vec_bool_binary_to_usize(data);
     println!("co2 = {}", co2);
 
-    // print_vec_vec(&calcdata);
     println!("oxygen * co2 = {}", oxygen * co2);
 
     oxygen * co2
 }
 
+fn vec_bool_binary_to_usize(bits: Vec<bool>) -> (usize, usize) {
+    // println!("{}", bits.len());
+    let mut bitslength: u32 = bits.len() as u32;
+    bitslength -= 1;
+    let mut num = 0;
+    let mut invertednum = 0;
+    for (i, bit) in bits.iter().enumerate() {
+        if !(*bit) {
+            invertednum += 2usize.pow(bitslength - i as u32);
+        }
+
+        if *bit {
+            num += 2usize.pow(bitslength - i as u32);
+        }
+    }
+    // println!("nor {} => {:b}", num, num);
+    // println!("inv {} => {:b}", invertednum, invertednum);
+    (num, invertednum)
+}
+
 #[allow(dead_code)]
 pub fn process(filename: &str) -> (usize, usize) {
-    //let data = std::fs::read_to_string("sample.txt").unwrap();
     let data = std::fs::read_to_string(filename).unwrap();
 
     let parsed: Vec<Vec<usize>> = data
@@ -158,26 +172,6 @@ pub fn process(filename: &str) -> (usize, usize) {
     println!("--------------- done -------------");
 
     (part1_answer, part2_answer)
-}
-
-fn vec_bool_binary_to_usize(bits: Vec<bool>) -> (usize, usize) {
-    // println!("{}", bits.len());
-    let mut bitslength: u32 = bits.len() as u32;
-    bitslength -= 1;
-    let mut num = 0;
-    let mut invertednum = 0;
-    for (i, bit) in bits.iter().enumerate() {
-        if !(*bit) {
-            invertednum += 2usize.pow(bitslength - i as u32);
-        }
-
-        if *bit {
-            num += 2usize.pow(bitslength - i as u32);
-        }
-    }
-    // println!("nor {} => {:b}", num, num);
-    // println!("inv {} => {:b}", invertednum, invertednum);
-    (num, invertednum)
 }
 
 #[test]
