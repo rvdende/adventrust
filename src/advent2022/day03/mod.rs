@@ -36,7 +36,7 @@ fn find_common_char(left: &str, right: &str) -> String {
     let output: String = left
         .chars()
         .filter(|c| match right.chars().position(|x| &x == c) {
-            Some(x) => true,
+            Some(_x) => true,
             None => false,
         })
         .unique_by(|c| c.to_string())
@@ -67,82 +67,6 @@ fn find_common_char_test() {
 }
 
 /////////////////////////////////////////////////////////////////
-
-fn process_old(filename: &str) {
-    let data = std::fs::read_to_string(filename).unwrap();
-    // let data = std::fs::read_to_string("data.txt").unwrap();
-
-    let part1: usize = data
-        .trim()
-        .split("\n")
-        .map(|rs| {
-            // char value
-
-            // let rsi: String = rs.to_string();
-            let chars = rs
-                .chars()
-                .map(|c| {
-                    let a = 'a' as u8;
-                    let z = 'z' as u8;
-                    let cap_a = 'A' as u8;
-                    let n = c as u8;
-
-                    // println!("{} {} {} {} {}", a, z, A, Z, n);
-
-                    if n >= a && n <= z {
-                        return n - a + 1;
-                    } else {
-                        return n - cap_a + 27;
-                    }
-                })
-                .collect::<Vec<u8>>();
-
-            // println!("{}", chars.len());
-
-            let mut output: usize = 0;
-
-            for x in 0..chars.len() / 2 {
-                for y in chars.len() / 2..chars.len() {
-                    if x != y {
-                        let obj_x = chars[x];
-                        let obj_y = chars[y];
-                        if obj_x == obj_y {
-                            // let z = rsi.as_bytes()[x] as char;
-                            // println!("{}",rsi.to_string());
-                            // println!("found match x {} y {} char {}", x, y, z);
-                            output = chars[x].into();
-                            return output;
-                        }
-                    }
-                }
-            }
-
-            return output;
-        })
-        .collect::<Vec<usize>>()
-        .iter()
-        .sum();
-
-    println!("part 1: {}", part1);
-
-    // ---------------------
-
-    let part2: Vec<_> = data.trim().split("\n").collect();
-
-    let mut idx = 0;
-    loop {
-        let a = part2[idx].to_string();
-        let b = part2[idx + 1].to_string();
-        let c = part2[idx + 2].to_string();
-        idx += 3;
-
-        if idx >= part2.len() {
-            break;
-        }
-    }
-
-    dbg!(part2);
-}
 
 fn process_part1(filename: &str) -> isize {
     let sumtotal: isize = std::fs::read_to_string(filename)
@@ -207,6 +131,7 @@ fn process_part2(filename: &str) -> isize {
     return sumtotal;
 }
 
+#[allow(dead_code)]
 pub fn run() {
     let sample_p1 = process_part1("src/advent2022/day03/sample.txt");
     println!("sample part 1: {}", sample_p1);

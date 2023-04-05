@@ -1,3 +1,4 @@
+#[allow(dead_code)]
 #[derive(Debug)]
 struct Signal {
     known: bool,
@@ -25,7 +26,7 @@ fn filterpossible(existing: &String, possible: &String, invert: bool) -> String 
     let output = existing
         .chars()
         .filter(|c| match possible.chars().position(|x| &x == c) {
-            Some(x) => invert,
+            Some(_x) => invert,
             None => !invert,
         })
         .collect();
@@ -103,7 +104,7 @@ impl Pattern {
                 .text
                 .chars()
                 .filter(|c| match one.text.chars().position(|x| &x == c) {
-                    Some(x) => false,
+                    Some(_x) => false,
                     None => true,
                 })
                 .collect();
@@ -125,6 +126,7 @@ impl Pattern {
     }
 }
 
+#[allow(dead_code)]
 struct Screen {
     signal: String,
     signaldata: Vec<Signal>,
@@ -206,6 +208,7 @@ fn figureoutnumbers(input: String) {
 }
 
 impl Screen {
+    #[allow(dead_code)]
     fn process(&mut self) {
         println!("{} - {}", self.signal, self.output);
     }
@@ -230,6 +233,7 @@ impl Screen {
     }
 }
 
+#[allow(dead_code)]
 fn process(filename: &str) -> (usize, usize) {
     let data = std::fs::read_to_string(filename).unwrap();
 
@@ -255,7 +259,7 @@ fn process(filename: &str) -> (usize, usize) {
 
 #[allow(dead_code)]
 pub fn run() {
-    let sample = process("src/advent2021/day08/sample.txt");
+    let _sample = process("src/advent2021/day08/sample.txt");
 
     // let example =
     //     "acedgfb cdfbe gcdfa fbcad dab cefabd cdfgeb eafb cagedb ab cdfeb fcadb cdfeb cdbaf";

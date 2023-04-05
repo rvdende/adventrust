@@ -71,6 +71,7 @@ impl Survey {
         println!();
     }
 
+    #[allow(dead_code)]
     fn advance_day(&mut self) {
         self.day += 1;
 

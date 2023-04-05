@@ -92,7 +92,7 @@ fn process(filename: &str, part: &str) -> usize {
 
     return total_points;
 }
-
+#[allow(dead_code)]
 pub fn run() {
     let sample_p1 = process("src/advent2022/day02/sample.txt", "part1");
     println!("sample_p1 {} ", sample_p1);
