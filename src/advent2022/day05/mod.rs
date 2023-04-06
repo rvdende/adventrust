@@ -143,6 +143,7 @@ fn process(filename: &str) -> (String, String) {
     (part1_answer, part2_answer)
 }
 
+#[allow(dead_code)]
 pub fn run() {
     process("src/advent2022/day05/sample.txt");
     process("src/advent2022/day05/input.txt");
