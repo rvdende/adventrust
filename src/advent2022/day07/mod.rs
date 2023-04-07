@@ -1,11 +1,14 @@
-struct Computer {}
+use self::command::Command;
+
+mod command;
+struct Computer {
+    pwd: String,
+}
 
 impl Computer {
-    fn command(&self, command: &str) {
-        if command.len() == 0 {
-            return;
-        }
-        println!("> {}", command);
+    fn command(&self, input: &str) {
+        let cmd = command::Command::parse(input.to_string());
+        // println!("> {:?}", cmd);
     }
 }
 
@@ -15,13 +18,17 @@ struct Folder {
 }
 
 fn process(filename: &str) {
-    let pc = Computer {};
+    let pc = Computer {
+        pwd: "/".to_string(),
+    };
 
-    let data = std::fs::read_to_string(filename)
+    let commands: Vec<Command> = std::fs::read_to_string(filename)
         .unwrap()
         .trim()
         .split("$")
-        .for_each(|l| pc.command(l.trim()));
+        .filter(|l| !l.is_empty())
+        .map(|l| command::Command::parse(l.trim().to_string()))
+        .collect();
 }
 
 pub fn run() {
