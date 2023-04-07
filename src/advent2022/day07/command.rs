@@ -1,32 +1,46 @@
-#[derive(Debug)]
-
+#[derive(Debug, PartialEq)]
 enum Type {
-    ChangeDir,
-    ListDir,
+    None,
+    ChangeDir(String),
+    ListDir(Vec<String>),
 }
 
+#[derive(Debug)]
 pub struct Command {
     cmd: Type,
 }
 
 impl Command {
     pub fn parse(input: String) -> Self {
-        let mut cmd = Type::ListDir;
+        let mut command = Command { cmd: Type::None };
 
         let lines = input.lines().enumerate().for_each(|(row, line)| {
-            if (row == 0) {
+            if row == 0 {
                 println!("$ {}", line);
 
-                cmd = match &line[0..2] {
-                    "cd" => Type::ChangeDir,
-                    _ => Type::ListDir,
+                command.cmd = match &line[0..2] {
+                    "cd" => Type::ChangeDir(line[3..].to_string()),
+                    _ => Type::ListDir(vec![]),
                 };
             }
 
-            cmd = Type::ChangeDir;
+            if row > 0 {
+                if let Type::ListDir(x) = &command.cmd {
+                    println!("  {}", line);
+                    x.push(line.to_string());
+                }
+                println!("  {}", line);
+
+                if &line[0..3] == "dir" {
+                    let dirname = &line[4..];
+                    println!(" DIRNAME: [{}]", dirname)
+                }
+            }
         });
 
-        Self { cmd }
+        println!(" command: {:?}", command);
+
+        command
     }
 }
 
