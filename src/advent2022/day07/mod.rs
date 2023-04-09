@@ -36,6 +36,42 @@ impl Computer {
         }
     }
 
+    fn get_size(&self, id: Uuid) -> u64 {
+        let mut size = 0;
+
+        self.fs.iter().for_each(|f| {
+            if f.parent_id == id && f.id != f.parent_id {
+                if f.is_dir {
+                    size += self.get_size(f.id);
+                } else {
+                    size += f.size;
+                }
+            }
+        });
+
+        size
+    }
+
+    fn get_size_by_name(&self, name: &str) -> u64 {
+        let f = self.fs.iter().find(|f| f.name == name).unwrap();
+        self.get_size(f.id)
+    }
+
+    fn get_by_max_size(&self, maxsize: u64) -> Vec<&FileData> {
+        let mut result: Vec<&FileData> = Vec::new();
+
+        self.fs.iter().for_each(|f| {
+            if f.is_dir {
+                let size = self.get_size(f.id);
+                if size <= maxsize {
+                    result.push(f.clone());
+                }
+            }
+        });
+
+        result
+    }
+
     fn cd(&mut self, name: &str) {
         if name == "/" {
             self.fs_current = self.fs_root.clone();
@@ -112,13 +148,47 @@ impl Computer {
             }
         })
     }
+
+    fn part1(&self) -> u64 {
+        let list = self.get_by_max_size(100_000);
+
+        let total: u64 = list
+            .iter()
+            .map(|f| {
+                let size = self.get_size(f.id);
+                println!("part1: {} {}", f.name, size);
+
+                size
+            })
+            .sum();
+
+        total
+    }
 }
 
 pub fn run() {
     let mut samplepc = Computer::new();
     samplepc.init("src/advent2022/day07/sample.txt");
     samplepc.print();
+    let total = samplepc.get_size(samplepc.fs_root);
+    println!("total: {}", total);
+
+    let test_e = samplepc.get_size_by_name("e");
+    println!("test_e: {}", test_e);
 }
 
 #[test]
-fn test() {}
+fn sample_part_1() {
+    let mut samplepc = Computer::new();
+    samplepc.init("src/advent2022/day07/sample.txt");
+
+    assert_eq!(samplepc.get_size_by_name("e"), 584);
+    assert_eq!(samplepc.get_size_by_name("a"), 94853);
+    assert_eq!(samplepc.get_size_by_name("d"), 24933642);
+    assert_eq!(samplepc.get_size(samplepc.fs_root), 48381165);
+
+    assert_eq!(samplepc.part1(), 95437);
+}
+
+#[test]
+fn input_part_1() {}
