@@ -3,11 +3,7 @@ use std::fs;
 pub fn process_part1(input: &str) -> usize {
     let result = input
         .split("\n\n")
-        .map(|elf| {
-            elf.lines()
-                .map(|i| i.parse::<usize>().unwrap())
-                .sum::<usize>()
-        })
+        .map(|elf| elf.lines().map(|i| i.parse::<usize>().unwrap()).sum())
         .max()
         .unwrap();
     return result;
