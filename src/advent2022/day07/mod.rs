@@ -1,34 +1,63 @@
-use self::command::Command;
-
-mod command;
-struct Computer {
-    pwd: String,
-}
-
-impl Computer {
-    fn command(&self, input: &str) {
-        let cmd = command::Command::parse(input.to_string());
-        // println!("> {:?}", cmd);
-    }
-}
-
-struct Folder {
-    parent: Option<Box<Folder>>,
-    contents: Vec<Folder>,
+#[derive(Debug)]
+struct FileData {
+    name: String,
+    size: u64,
+    is_dir: bool,
 }
 
 fn process(filename: &str) {
-    let pc = Computer {
-        pwd: "/".to_string(),
-    };
+    let mut pwd = "/";
+    let mut fs: Vec<FileData> = Vec::new();
 
-    let commands: Vec<Command> = std::fs::read_to_string(filename)
+    let commands: Vec<_> = std::fs::read_to_string(filename)
         .unwrap()
         .trim()
         .split("$")
         .filter(|l| !l.is_empty())
-        .map(|l| command::Command::parse(l.trim().to_string()))
+        .map(|l| {
+            let mut cmd = "";
+
+            l.trim().lines().enumerate().for_each(|(row, line)| {
+                if row == 0 {
+                    cmd = &line[0..2];
+
+                    if cmd == "cd" {
+                        let folder = &line[3..];
+                        println!("CD {}", folder);
+
+                        if &folder[0..1] == "/" {
+                            pwd = folder
+                        }
+                    }
+
+                    if cmd == "ls" {
+                        println!("LS [{}]", line);
+                    }
+                }
+
+                if row > 0 {
+                    println!("  {}", line);
+
+                    if &line[0..3] == "dir" {
+                        let dirname = &line[4..];
+                        println!(" DIRNAME: [{}]", dirname)
+                    } else {
+                        let (filesize, filename) = line.split_once(" ").unwrap();
+
+                        fs.push(FileData {
+                            name: filename.to_string(),
+                            size: filesize.parse::<u64>().unwrap(),
+                            is_dir: false,
+                        });
+                    }
+                }
+            })
+        })
         .collect();
+
+    fs.iter().for_each(|f| {
+        println!("FS: {:?}", f);
+    })
 }
 
 pub fn run() {
