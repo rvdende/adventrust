@@ -1,4 +1,3 @@
-use colored::Colorize;
 struct Forest {
     trees: Vec<isize>,
     width: isize,
@@ -37,26 +36,8 @@ impl Forest {
         }
     }
 
-    fn print(&self) {
-        println!("width: {}", self.width);
-        println!("height: {}", self.height);
-        println!("trees: {:?}", self.trees);
-
-        for y in 0..self.height {
-            for x in 0..self.width {
-                let height = self.get_height(x, y);
-                let visible = self.check_tree_visibility(x, y);
-                if (visible) {
-                    print!("{}", height.to_string().red());
-                } else {
-                    print!("{}", height.to_string().green());
-                }
-            }
-            println!();
-        }
-    }
-
     /** how many trees are visible from outside the grid? */
+    #[allow(dead_code)]
     fn part1(&self) -> isize {
         let mut total_visible = 0;
         for y in 0..self.height {
@@ -87,6 +68,7 @@ impl Forest {
         x < 0 || y < 0 || x > (self.width - 1) || y > (self.height - 1)
     }
 
+    #[allow(dead_code)]
     fn check_tree_visibility(&self, x: isize, y: isize) -> bool {
         if x == 0 {
             return true;
@@ -135,7 +117,6 @@ impl Forest {
     }
 
     fn walk(&self, x: isize, y: isize, direction: &Direction) -> isize {
-        let mut end = false;
         let mut next: Coord = Coord {
             x: x as isize,
             y: y as isize,
@@ -207,7 +188,7 @@ impl Forest {
         self.trees
             .iter()
             .enumerate()
-            .map(|(id, tree)| {
+            .map(|(id, _tree)| {
                 let coord = self.tree_coord_from_id(id as isize);
 
                 self.scenic_score_for_tree(coord.x, coord.y)
