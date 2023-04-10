@@ -1,4 +1,4 @@
-use std::{cmp::Ordering, str::Lines};
+use std::str::Lines;
 
 trait Instruction {
     fn do_work(&mut self, register_x: &mut i32) -> bool;
