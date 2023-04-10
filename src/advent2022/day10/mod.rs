@@ -168,9 +168,9 @@ fn display_screen(screen: Vec<bool>) -> String {
 
 pub fn run() {
     // process("src/advent2022/day10/basic.txt");
-    process("src/advent2022/day10/sample.txt");
+    // process("src/advent2022/day10/sample.txt");
 
-    // process("src/advent2022/day10/input.txt");
+    process("src/advent2022/day10/input.txt");
 }
 
 #[test]
@@ -201,13 +201,16 @@ fn sample() {
 
 #[test]
 fn input() {
-    // part 2
-    /*
-    ###  #    #### #### #### #     ##  ####
-    #  # #    #       # #    #    #  # #
-    #  # #    ###    #  ###  #    #    ###
-    ###  #    #     #   #    #    # ## #
-    # #  #    #    #    #    #    #  # #
-    #  # #### #### #### #    ####  ### ####
-    */
+    let (part1, part2) = process("src/advent2022/day10/input.txt");
+    assert_eq!(part1, 17020);
+
+    let part2_expected = "
+###..#....####.####.####.#.....##..####.
+#..#.#....#.......#.#....#....#..#.#....
+#..#.#....###....#..###..#....#....###..
+###..#....#.....#...#....#....#.##.#....
+#.#..#....#....#....#....#....#..#.#....
+#..#.####.####.####.#....####..###.####.
+";
+    assert_eq!(part2.trim(), part2_expected.trim());
 }
