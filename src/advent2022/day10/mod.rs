@@ -84,7 +84,7 @@ fn load_instruction(lines: &mut Lines, current_instruction: &mut Box<dyn Instruc
 }
 
 fn process(filename: &str) -> (i32, String) {
-    let mut data = std::fs::read_to_string(filename)
+    let data = std::fs::read_to_string(filename)
         .unwrap()
         .trim()
         .to_string();
@@ -166,6 +166,7 @@ fn display_screen(screen: Vec<bool>) -> String {
     lines.trim().to_string()
 }
 
+#[allow(dead_code)]
 pub fn run() {
     // process("src/advent2022/day10/basic.txt");
     // process("src/advent2022/day10/sample.txt");

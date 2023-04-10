@@ -21,7 +21,7 @@ struct Monkeys {
 
 impl Monkeys {
     fn new(path: &str, worry_divider: u128) -> Monkeys {
-        let mut monkeys: Vec<Monkey> = std::fs::read_to_string(path)
+        let monkeys: Vec<Monkey> = std::fs::read_to_string(path)
             .unwrap()
             .split("\n\n")
             .map(|m| {
