@@ -34,7 +34,7 @@ fn char_to_elevation(c: char) -> u8 {
         val = 'z' as u8;
     }
 
-    return 25 - (val - ('a' as u8));
+    return (val - ('a' as u8));
 }
 
 impl Hill {
@@ -128,7 +128,7 @@ impl Hill {
         };
 
         if let Some(f) = self.get_map_at_coord(&c) {
-            if f.elevation <= current_map.elevation {
+            if f.elevation == current_map.elevation || f.elevation == current_map.elevation + 1 {
                 possible.push(c);
             }
         }
@@ -182,27 +182,28 @@ impl Hill {
             return depth;
         }
 
-        if depth > 1000 {
+        if depth > 2000 {
             return 0;
         }
 
-        let mut num_steps = 0;
+        let results: Vec<usize> = test
+            .iter()
+            .map(|c| self.get_possible_steps(coord, c, depth + 1))
+            .filter(|i| *i != 0)
+            .collect();
 
-        test.iter().for_each(|c| {
-            let output = self.get_possible_steps(coord, c, depth + 1);
-            if output > 0 {
-                num_steps = output;
-            }
-        });
+        if results.len() > 0 {
+            return results.iter().min().unwrap().clone();
+        }
 
-        return num_steps;
+        return 0;
     }
 
     fn get_end(&self) -> Coord {
         self.index_to_xy(self.map.iter().position(|i| i.symbol == 'E').unwrap())
     }
 
-    fn find_shortest_path(&self) {
+    fn find_shortest_path(&self) -> usize {
         let map = self.map.clone();
 
         let mut player = self.index_to_xy(map.iter().position(|i| i.symbol == 'S').unwrap());
@@ -214,6 +215,7 @@ impl Hill {
 
         let steps = self.get_possible_steps(&player, &player, 0);
         println!("steps {}", steps);
+        return steps;
     }
 }
 
@@ -222,4 +224,12 @@ pub fn run() {
     hill.print();
 
     hill.find_shortest_path();
+}
+
+#[test]
+fn sample() {
+    assert_eq!(
+        Hill::load("src/advent2022/day12/sample.txt").find_shortest_path(),
+        31
+    );
 }
