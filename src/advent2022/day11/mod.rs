@@ -201,6 +201,7 @@ fn process(path: &str, max_rounds: u128, worry_divider: u128) -> u128 {
     monkeys.level_of_monkey_business()
 }
 
+#[allow(dead_code)]
 pub fn run() {
     process("src/advent2022/day11/sample.txt", 20, 3);
     process("src/advent2022/day11/input.txt", 10_000, 1);
