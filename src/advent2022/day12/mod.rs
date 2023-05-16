@@ -1,5 +1,3 @@
-use colored::Colorize;
-
 // https://docs.rs/pathfinding/latest/pathfinding/
 use pathfinding::prelude::bfs;
 
@@ -8,23 +6,10 @@ struct Pos(i32, i32);
 
 impl Pos {
     fn successors(&self, hill: &Hill) -> Vec<Pos> {
-        let &Pos(x, y) = self;
-
-        // println!("\nsuccessors {:?}", (x, y));
-
-        if x < 0 {
-            return Vec::new();
-        };
-        if y < 0 {
-            return Vec::new();
-        };
-
         let coord = Coord {
             x: self.0.clone() as usize,
             y: self.1.clone() as usize,
         };
-
-        // println!("coord {:?}", coord);
 
         let possible = hill.get_possible_steps(&coord);
 
@@ -33,40 +18,22 @@ impl Pos {
             .map(|p| Pos(p.x as i32, p.y as i32))
             .collect();
 
-        // println!("{:?}", options);
-
         return options;
-
-        // vec![
-        //     Pos(x + 1, y + 2),
-        //     Pos(x + 1, y - 2),
-        //     Pos(x - 1, y + 2),
-        //     Pos(x - 1, y - 2),
-        //     Pos(x + 2, y + 1),
-        //     Pos(x + 2, y - 1),
-        //     Pos(x - 2, y + 1),
-        //     Pos(x - 2, y - 1),
-        // ]
     }
 }
 
 #[derive(Clone, Debug)]
 struct Hill {
     map: Vec<MapPoint>,
-    /** east-west size */
     width: usize,
-    /** north-south size */
     height: usize,
-
-    route: Vec<Coord>,
 }
 
 #[derive(Clone, Copy, Debug)]
 struct MapPoint {
     symbol: char,
     elevation: u8,
-    is_start: bool,
-    is_end: bool,
+
     x: i32,
     y: i32,
 }
@@ -88,18 +55,15 @@ fn char_to_elevation(c: char) -> u8 {
         val = 'z' as u8;
     }
 
-    return (val - ('a' as u8));
+    return val - ('a' as u8);
 }
 
 impl Hill {
     fn load(path: &str) -> Hill {
         let data = std::fs::read_to_string(path).unwrap();
-
         let width = data.lines().next().unwrap().len();
         let height: usize = data.lines().count();
-
         let wi32 = width as i32;
-        let hi32 = height as i32;
 
         let mut map: Vec<MapPoint> = data
             .lines()
@@ -108,8 +72,6 @@ impl Hill {
                     return MapPoint {
                         symbol: c,
                         elevation: char_to_elevation(c),
-                        is_start: c == 'S',
-                        is_end: c == 'E',
                         x: 0,
                         y: 0,
                     };
@@ -128,93 +90,17 @@ impl Hill {
             })
             .collect();
 
-        Hill {
-            map,
-            width,
-            height,
-            route: Vec::new(),
-        }
-    }
-
-    fn is_new_step(&self, coord: &Coord) -> bool {
-        let routeCoord: Vec<Coord> = self
-            .route
-            .iter()
-            .filter(|r| r.x == coord.x && r.y == coord.y)
-            .map(|r| r.clone())
-            .collect();
-
-        routeCoord.len() == 0
-    }
-
-    fn print(&self) {
-        let mut output: String = "".to_string();
-
-        for y in 0..self.height {
-            for x in 0..self.width {
-                let index = y * self.width + x;
-
-                let loc = &self.map[index];
-
-                let elevation = loc.elevation;
-
-                if loc.is_start {
-                    // print!("{}", loc.symbol.to_string().bright_yellow());
-
-                    output = format!("{output}{}", loc.symbol.to_string().bright_yellow());
-                }
-
-                if loc.is_end {
-                    // print!("{}", loc.symbol.to_string().bright_green());
-                    output = format!("{output}{}", loc.symbol.to_string().bright_green());
-                }
-
-                let routeCoord: Vec<Coord> = self
-                    .route
-                    .iter()
-                    .filter(|r| r.x == x && r.y == y)
-                    .map(|r| r.clone())
-                    .collect();
-
-                if !loc.is_start && !loc.is_end {
-                    if routeCoord.len() > 0 {
-                        // print!("{}", loc.symbol.to_string().truecolor(100, 100, 100));
-                        output = format!(
-                            "{output}{}",
-                            loc.symbol.to_string().truecolor(200, 200, 200)
-                        );
-                    } else {
-                        // print!("{}", loc.symbol.to_string().truecolor(100, 100, 100));
-                        output = format!(
-                            "{output}{}",
-                            loc.symbol.to_string().truecolor(100, 100, 100)
-                        );
-                    }
-                }
-
-                // print!("{}", elevation)
-            }
-            output = format!("{output}\n");
-        }
-
-        println!("{}", output);
+        Hill { map, width, height }
     }
 
     fn get_map_at_coord(&self, coord: &Coord) -> Option<MapPoint> {
         let index: usize = coord.y * self.width + coord.x;
 
-        if index < 0 {
-            return None;
-        }
-        if index >= self.map.len() - 1 {
+        if index > self.map.len() - 1 {
             return None;
         }
 
         return Some(self.map[index]);
-    }
-
-    fn coord_to_index(&self, coord: Coord) -> usize {
-        return coord.y * self.width + coord.x;
     }
 
     fn index_to_xy(&self, index: usize) -> Coord {
@@ -237,10 +123,10 @@ impl Hill {
         if y < 0 {
             return;
         }
-        if x > self.width as isize - 1 {
+        if x > (self.width as isize) {
             return;
         }
-        if y > self.height as isize - 1 {
+        if y > (self.height as isize) {
             return;
         }
 
@@ -250,10 +136,7 @@ impl Hill {
         };
 
         if let Some(f) = self.get_map_at_coord(&c) {
-            if f.elevation == current_map.elevation
-                || f.elevation == current_map.elevation + 1
-                || f.elevation < current_map.elevation
-            {
+            if f.elevation <= current_map.elevation + 1 {
                 possible.push(c);
             }
         }
@@ -261,14 +144,10 @@ impl Hill {
 
     /** get possible lower elevation steps */
     fn get_possible_steps(&self, coord: &Coord) -> Vec<Coord> {
-        // println!("coord: {:?}", coord);
-
         let current_map = match self.get_map_at_coord(coord) {
             Some(x) => x,
             None => return Vec::new(),
         };
-
-        // println!("current_map: {:?}", current_map);
 
         let mut possible: Vec<Coord> = Vec::new();
 
@@ -301,15 +180,7 @@ impl Hill {
             coord.y as isize,
         );
 
-        let possible_steps: Vec<Coord> = possible
-            .iter()
-            .filter(|f| self.is_new_step(f))
-            .map(|p| p.clone())
-            .collect();
-
-        // println!("possible_steps: {:?}", possible_steps);
-
-        possible_steps
+        possible
     }
 
     fn get_start(&self) -> Coord {
@@ -321,20 +192,16 @@ impl Hill {
     }
 
     fn part1(&self) -> usize {
-        let mut goal = Pos(self.get_end().x as i32, self.get_end().y as i32);
-        let mut start = Pos(self.get_start().x as i32, self.get_start().y as i32);
+        let goal = Pos(self.get_end().x as i32, self.get_end().y as i32);
+        let start = Pos(self.get_start().x as i32, self.get_start().y as i32);
 
-        println!("start: {:?}", start);
-        println!("goal: {:?}", goal);
         let result = bfs(&start, |p| p.successors(self), |p| *p == goal);
 
-        println!("start: {:?}", start);
-        println!("goal: {:?}", goal);
+        let steps = match result {
+            Some(x) => x.iter().count(),
+            None => 99999999,
+        };
 
-        println!("result: {:?}", result);
-
-        let steps = result.unwrap().iter().count();
-        println!("steps: {}", steps);
         return steps - 1;
     }
 
@@ -354,8 +221,8 @@ impl Hill {
         let shortest: Vec<usize> = start_locations
             .iter()
             .map(|s| {
-                let mut goal = Pos(self.get_end().x as i32, self.get_end().y as i32);
-                let mut start = Pos(s.x as i32, s.y as i32);
+                let goal = Pos(self.get_end().x as i32, self.get_end().y as i32);
+                let start = Pos(s.x as i32, s.y as i32);
 
                 let result = bfs(&start, |p| p.successors(self), |p| *p == goal);
 
@@ -365,7 +232,6 @@ impl Hill {
                 } - 1;
 
                 if steps < lowest {
-                    println!("{} {:?}", steps, s);
                     lowest = steps;
                 }
 
@@ -375,38 +241,39 @@ impl Hill {
 
         let answer = shortest.iter().min().unwrap();
 
-        println!("answer: {:?}", answer);
-
         return answer.clone();
     }
 }
 
 #[allow(dead_code)]
 pub fn run() {
-    let mut hill = Hill::load("src/advent2022/day12/input.txt");
+    let hillsample = Hill::load("src/advent2022/day12/sample.txt");
 
-    hill.print();
-    hill.part2();
+    let result = hillsample.part1();
+    println!("hillsample answer: {:?}", result);
 
-    // hill.find_shortest_path();
+    let resultp2 = hillsample.part2();
+    println!("hillsample answer: {:?}", resultp2);
+
+    let hill = Hill::load("src/advent2022/day12/input.txt");
+
+    let result = hill.part1();
+    println!("answer: {:?}", result);
+
+    let resultp2 = hill.part2();
+    println!("answerp2: {:?}", resultp2);
 }
 
 #[test]
-fn sample_part1() {
-    let mut hill = Hill::load("src/advent2022/day12/sample.txt");
+fn sample() {
+    let hill = Hill::load("src/advent2022/day12/sample.txt");
     assert_eq!(hill.part1(), 31);
-}
-
-#[test]
-fn sample_part2() {
-    let mut hill = Hill::load("src/advent2022/day12/sample.txt");
-
     assert_eq!(hill.part2(), 29);
 }
 
 #[test]
 fn input() {
-    let mut hill = Hill::load("src/advent2022/day12/input.txt");
+    let hill = Hill::load("src/advent2022/day12/input.txt");
     assert_eq!(hill.part1(), 449);
     assert_eq!(hill.part2(), 443);
 }
