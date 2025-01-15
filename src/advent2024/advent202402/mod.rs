@@ -20,11 +20,11 @@ pub fn check_report_levels(report: Vec<isize>) -> bool {
         safe = 0;
     }
 
-    if (report.len() == 1) {
+    if report.len() == 1 {
         safe = 0;
     }
 
-    if (report.len() > 0) {
+    if report.len() > 0 {
         for idx in 0..report.len() - 1 {
             let level = report[idx];
             let next = report[idx + 1];
