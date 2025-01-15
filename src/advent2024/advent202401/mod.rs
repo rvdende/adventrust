@@ -14,11 +14,11 @@ pub fn process_part1(input: &str) -> isize {
         // split on spaces inbetween numbers
         let number: Vec<isize> = line
             .split_whitespace()
-            .map(|i| i.parse::<isize>().unwrap()).collect();
+            .map(|i| i.parse::<isize>().unwrap())
+            .collect();
 
         leftside.push(number[0]);
         rightside.push(number[1]);
-
     });
 
     leftside.sort();
@@ -27,7 +27,10 @@ pub fn process_part1(input: &str) -> isize {
     // dbg!(&leftside);
     // dbg!(&rightside);
 
-    assert!(leftside.len() == rightside.len(), "ERROR: Left and right sides not equal length!!!");
+    assert!(
+        leftside.len() == rightside.len(),
+        "ERROR: Left and right sides not equal length!!!"
+    );
 
     let mut total_combined = 0;
 
@@ -37,29 +40,37 @@ pub fn process_part1(input: &str) -> isize {
         // math abs
         total_combined += diff.abs();
         // total_combined += diff;
-    }    
-
+    }
 
     return total_combined;
 }
 
+// #[allow(dead_code)]
 pub fn process_part2(input: &str) -> isize {
-    let mut result = input
-        .split("\n\n")
-        .map(|elf| {
-            elf.lines()
-                .map(|i| i.parse::<isize>().unwrap())
-                .sum::<isize>()
-        })
-        .collect::<Vec<_>>();
+    let mut leftside: Vec<isize> = Vec::new();
+    let mut rightside: Vec<isize> = Vec::new();
 
-    result.sort_by(|a, b| b.cmp(a));
+    input.lines().for_each(|line| {
+        // split on spaces inbetween numbers
+        let number: Vec<isize> = line
+            .split_whitespace()
+            .map(|i| i.parse::<isize>().unwrap())
+            .collect();
 
-    // dbg!(&result);
+        leftside.push(number[0]);
+        rightside.push(number[1]);
+    });
 
-    let sum = result.iter().take(3).sum();
+    let mut total: isize = 0;
+    for idx in 0..leftside.len() {
+        // count how many times in right side.
+        let leftnum = leftside[idx];
+        let count: isize = rightside.iter().filter(|&x| *x == leftnum).count() as isize;
+        println!("Count: {} appears {}", leftnum, count);
+        total = total + (leftnum * count);
+    }
 
-    return sum;
+    return total;
 }
 
 fn process(filename: &str) -> (isize, isize) {
@@ -68,17 +79,17 @@ fn process(filename: &str) -> (isize, isize) {
     println!("Part1\t{}", &part1);
 
     let part2 = process_part2(&data);
-    // println!("Part2\t{}", part2);
+    println!("Part2\t{}", part2);
 
-    let part2 = 0;
+    // let part2 = 0;
 
     (part1, part2)
 }
 
 #[allow(dead_code)]
 pub fn run() {
-    process("src/advent2024/advent202401/sample.txt");
-    // process("src/advent2024/advent202401/input.txt");
+    // process("src/advent2024/advent202401/sample.txt");
+    process("src/advent2024/advent202401/input.txt");
     // process("src/advent2022/day01/input.txt");
 }
 
