@@ -4,5 +4,5 @@ mod advent2022;
 mod advent2024;
 
 fn main() {
-    advent2024::advent202403::run();
+    advent2024::advent202404::run();
 }
