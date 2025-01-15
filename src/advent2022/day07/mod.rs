@@ -69,7 +69,7 @@ impl Computer {
             if f.is_dir {
                 let size = self.get_size(f.id, 0);
                 if size <= maxsize {
-                    result.push(f.clone());
+                    result.push(f);
                 }
             }
         });

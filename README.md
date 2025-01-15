@@ -1,3 +1,14 @@
+
+```sh
+cargo install cargo-watch
+cargo watch -x run
+```
+
+
+=================================================
+
+# OLD NOTES:
+
 General notes on learning rust
 
 https://www.youtube.com/watch?v=dFkGNe4oaKk
