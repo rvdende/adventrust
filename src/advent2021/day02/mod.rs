@@ -1,103 +1,107 @@
+#![cfg(test)]
+
+pub struct SubmarinePath {
+    pub path: Vec<(SubmarineDirection, isize)>,
+}
+
 #[derive(Debug)]
-enum Direction {
+pub enum SubmarineDirection {
     Forward,
     Down,
     Up,
 }
 
-fn part1(data_in: &Vec<(Direction, isize)>) -> isize {
-    let mut horizontal = 0;
-    let mut depth = 0;
+impl SubmarinePath {
+    #[allow(dead_code)]
+    fn from_file(filename: &str) -> Self {
+        // let data = std::fs::read_to_string("sample.txt").expect("could not read file.");
+        let data = std::fs::read_to_string(filename).expect("could not read file.");
 
-    for (dir, value) in data_in {
-        match dir {
-            Direction::Forward => {
-                println!("Forward {}", value);
-                horizontal += value;
-            }
-            Direction::Down => {
-                depth += value;
-                println!("Down {}", value);
-            }
-            Direction::Up => {
-                depth -= value;
-                println!("Up {}", value);
-            }
-        }
+        let data = data
+            .trim()
+            .split('\n')
+            .map(|s| {
+                let (dirstr, value) = s.split_once(' ').expect("Must contain a space");
+                let value: isize = value.parse().expect("Must be a number");
+                let dirstr: SubmarineDirection = match dirstr {
+                    "forward" => SubmarineDirection::Forward,
+                    "down" => SubmarineDirection::Down,
+                    "up" => SubmarineDirection::Up,
+                    _ => panic!("Unknown direction"),
+                };
+                (dirstr, value)
+            })
+            .collect::<Vec<(SubmarineDirection, isize)>>();
+
+        Self { path: data }
     }
 
-    println!("Horizontal: {}", horizontal);
-    println!("Depth: {}", depth);
-    println!("Total: {}", horizontal * depth);
+    fn distance(&self) -> isize {
+        let mut horizontal = 0;
+        let mut depth = 0;
 
-    horizontal * depth
-}
-
-fn part2(data_in: Vec<(Direction, isize)>) -> isize {
-    let mut horizontal = 0;
-    let mut depth = 0;
-    let mut aim = 0;
-
-    for (dir, value) in data_in {
-        match dir {
-            Direction::Down => {
-                aim += value;
-                println!("Down {}", value);
-            }
-            Direction::Up => {
-                aim -= value;
-                println!("Up {}", value);
-            }
-            Direction::Forward => {
-                println!("Forward {}", value);
-                horizontal += value;
-                depth += aim * value;
+        for (dir, value) in &self.path {
+            match dir {
+                SubmarineDirection::Forward => {
+                    println!("Forward {}", value);
+                    horizontal += value;
+                }
+                SubmarineDirection::Down => {
+                    depth += value;
+                    println!("Down {}", value);
+                }
+                SubmarineDirection::Up => {
+                    depth -= value;
+                    println!("Up {}", value);
+                }
             }
         }
+
+        println!("Horizontal: {}", horizontal);
+        println!("Depth: {}", depth);
+        println!("Total: {}", horizontal * depth);
+
+        horizontal * depth
     }
 
-    println!("Horizontal: {}", horizontal);
-    println!("Depth: {}", depth);
-    println!("Total: {}", horizontal * depth);
+    fn final_distance(&self) -> isize {
+        let mut horizontal = 0;
+        let mut depth = 0;
+        let mut aim = 0;
 
-    horizontal * depth
-}
+        for (dir, value) in &self.path {
+            match dir {
+                SubmarineDirection::Down => {
+                    aim += value;
+                    println!("Down {}", value);
+                }
+                SubmarineDirection::Up => {
+                    aim -= value;
+                    println!("Up {}", value);
+                }
+                SubmarineDirection::Forward => {
+                    println!("Forward {}", value);
+                    horizontal += value;
+                    depth += aim * value;
+                }
+            }
+        }
 
-#[allow(dead_code)]
-fn calculate(filename: &str) -> (isize, isize) {
-    // let data = std::fs::read_to_string("sample.txt").expect("could not read file.");
-    let data = std::fs::read_to_string(filename).expect("could not read file.");
+        println!("Horizontal: {}", horizontal);
+        println!("Depth: {}", depth);
+        println!("Total: {}", horizontal * depth);
 
-    let data = data
-        .trim()
-        .split('\n')
-        .map(|s| {
-            let (dirstr, value) = s.split_once(' ').expect("Must contain a space");
-            let value: isize = value.parse().expect("Must be a number");
-            let dirstr: Direction = match dirstr {
-                "forward" => Direction::Forward,
-                "down" => Direction::Down,
-                "up" => Direction::Up,
-                _ => panic!("Unknown direction"),
-            };
-            (dirstr, value)
-        })
-        .collect::<Vec<(Direction, isize)>>();
-
-    let part1_answer = part1(&data);
-
-    let part2_answer = part2(data);
-
-    (part1_answer, part2_answer)
+        horizontal * depth
+    }
 }
 
 #[test]
 fn test() {
-    let sample = calculate("src/advent2021/day02/sample.txt");
-    assert_eq!(sample.0, 150);
-    assert_eq!(sample.1, 900);
+    let subpath = SubmarinePath::from_file("src/advent2021/day02/sample.txt");
+    assert_eq!(subpath.distance(), 150);
+    assert_eq!(subpath.final_distance(), 900);
 
-    let input = calculate("src/advent2021/day02/input.txt");
-    assert_eq!(input.0, 2215080);
-    assert_eq!(input.1, 1864715580);
+    let input = SubmarinePath::from_file("src/advent2021/day02/input.txt");
+    assert_eq!(input.distance(), 2215080);
+    assert_eq!(input.final_distance(), 1864715580);
 }
